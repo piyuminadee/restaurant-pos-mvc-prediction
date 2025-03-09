@@ -1,2 +1,2 @@
 
-[![Demo Video](demo.gif)](POS.mp4)
+[![Demo Video](POS.gif)](POS.mp4)
