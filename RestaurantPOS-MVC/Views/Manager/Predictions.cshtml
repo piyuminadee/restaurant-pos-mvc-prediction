@@ -1,0 +1,136 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model RestaurantPOS_MVC.Models.PredictionsViewModel
+@{
+    ViewData["Title"] = "Sales Predictions";
+}
+
+<div class="container-fluid">
+    <h1 class="my-4 text-center">Sales Predictions</h1>
+
+    <!-- Predicted Sales for Next Year -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Predicted Sales for Next Year</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.PredictedSales.Any())
+            {
+                <canvas id="predictedSalesChart" width="400" height="200"></canvas>
+            }
+            else
+            {
+                <p>No predicted sales data available.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Historical Sales for Comparison -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Historical Sales</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.HistoricalSales.Any())
+            {
+                <canvas id="historicalSalesChart" width="400" height="200"></canvas>
+            }
+            else
+            {
+                <p>No historical sales data available.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Best-Selling Items for Each Month -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Best-Selling Items for Each Month</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Best-Selling Item</th>
+                        <th>Quantity Sold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.BestSellingItems)
+                    {
+                        <tr>
+                            <td>@item.Month</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.Quantity</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Predicted Sales Chart
+        @if (Model.PredictedSales.Any())
+        {
+            <text>
+            var predictedCtx = document.getElementById('predictedSalesChart').getContext('2d');
+            var predictedSalesChart = new Chart(predictedCtx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.PredictedSales.Select(p => p.Month))),
+                    datasets: [{
+                        label: 'Predicted Sales',
+                        data: @Html.Raw(Json.Serialize(Model.PredictedSales.Select(p => p.Sales))),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            </text>
+        }
+
+        // Historical Sales Chart
+        @if (Model.HistoricalSales.Any())
+        {
+            <text>
+            var historicalCtx = document.getElementById('historicalSalesChart').getContext('2d');
+            var historicalSalesChart = new Chart(historicalCtx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.HistoricalSales.Select(h => h.Month))),
+                    datasets: [{
+                        label: 'Historical Sales',
+                        data: @Html.Raw(Json.Serialize(Model.HistoricalSales.Select(h => h.Sales))),
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            </text>
+        }
+    </script>
+}
