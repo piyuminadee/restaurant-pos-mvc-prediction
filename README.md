@@ -1,2 +1,1 @@
-
-[![Demo Video](POS.gif)](POS.mp4)
+[Watch the Demo](https://github.com/piyuminadee/restaurant-pos-mvc-prediction/blob/master/POS.mp4)
